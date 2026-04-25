@@ -1,0 +1,7 @@
+python-telegram-bot~=20.0
+supabase
+fastapi<0.100.0
+uvicorn
+pytest
+requests
+pydantic<2.0.0
