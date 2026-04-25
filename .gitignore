@@ -1,0 +1,4 @@
+.env
+.ash_history
+*.zip
+*.tar.gz

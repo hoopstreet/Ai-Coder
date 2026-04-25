@@ -1,0 +1,3 @@
+*.py diff=python
+*.md diff=markdown
+*.json diff=json

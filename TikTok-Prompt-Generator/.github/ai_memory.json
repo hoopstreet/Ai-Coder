@@ -1,0 +1,52 @@
+{
+  "history": [
+    {
+      "time": "2026-04-21T08:38:56.194008",
+      "functions": [
+        "detect_niche",
+        "generate_positive_prompt",
+        "generate_negative_prompt",
+        "generate"
+      ],
+      "classes": [
+        "AITrainingCore"
+      ]
+    },
+    {
+      "time": "2026-04-21T08:59:32.891846",
+      "functions": [
+        "detect_niche",
+        "generate_positive_prompt",
+        "generate_negative_prompt",
+        "generate"
+      ],
+      "classes": [
+        "AITrainingCore"
+      ]
+    },
+    {
+      "time": "2026-04-21T09:02:09.268576",
+      "functions": [
+        "detect_niche",
+        "generate_positive_prompt",
+        "generate_negative_prompt",
+        "generate"
+      ],
+      "classes": [
+        "AITrainingCore"
+      ]
+    },
+    {
+      "time": "2026-04-21T09:25:06.654995",
+      "functions": [
+        "detect_niche",
+        "generate_positive_prompt",
+        "generate_negative_prompt",
+        "generate"
+      ],
+      "classes": [
+        "AITrainingCore"
+      ]
+    }
+  ]
+}
