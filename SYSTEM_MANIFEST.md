@@ -1,21 +1,19 @@
 # 🛰️ AI-CODER SYSTEM MANIFEST (CONTEXT BRIDGE)
 ### 🎯 Purpose
-This document ensures continuity between different AI Agent sessions. If you are a new Agent, read this first.
+This document ensures continuity between different AI Agent sessions.
 
 ### 🛠️ CORE ARCHITECTURE FLOW
-1. **Trigger**: Telegram Bot (`bot/main.py`) receives a command.
-2. **Orchestration**: Command is routed to `agent.py` or `core/orchestrator.py`.
-3. **Brain**: Requests are processed by `core/ai_brain.py` using Gemini-2.5-Flash.
-4. **Injection**: Resulting code is physically written to `/root/Ai-Coder/projects/[project_name]` via `core/injector.py`.
-5. **CLI**: Manual overrides and shell tasks are handled via `/usr/local/bin/gemini`.
+1. **Trigger**: Telegram Bot (`bot/main.py`)
+2. **Brain**: Gemini-2.5-Flash (`core/ai_brain.py`)
+3. **Injection**: `core/injector.py`
+4. **CLI**: `/usr/local/bin/gemini` (with 🌀 visual feedback)
+
+### ⚡ AI INTERACTION PROTOCOL (v1.7.6)
+- **Format**: Provide full raw bash code blocks (e.g., cat << 'EOF').
+- **Mobile Friendly**: Split long scripts into multiple parts.
+- **No UI Editors**: Do not rely on "file preview" buttons; prioritize terminal-ready text.
+- **Remote Targets**: Use absolute paths (`/root/Ai-Coder/...`).
 
 ### ⚡ UPGRADE HIGHLIGHTS (v1.7.5)
-- **iSH Spinner**: CLI uses 🌀 to provide visual feedback on mobile.
-- **Git PAT Bypass**: Remote origin is set to `https://[TOKEN]@github.com/...` for passwordless sync.
-- **DNA Logging**: Every version upgrade is appended to `DNA.md` with timestamps.
-
-### 📂 FILE MAP
-- `/root/Ai-Coder/core/`: The engine (Brain, Injector, Orchestrator).
-- `/root/Ai-Coder/bot/`: Telegram polling service.
-- `/root/Ai-Coder/projects/`: Isolated dev environments.
-- `/usr/local/bin/gemini`: The system-wide Agent CLI.
+- **Git PAT Bypass**: Remote origin is hardcoded with token.
+- **DNA Logging**: Evolutionary history preserved in DNA.md.
