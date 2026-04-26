@@ -15,3 +15,6 @@
 [v1.4.0] - ROADMAP SYNC COMPLETE
 🎯 Status: All systems nominal. Phase 0-3 Verified.
 ⚙️ Mode: Autonomous Development Enabled.
+
+[v1.5.0] - Official Roadmap Expansion & iSH CLI Integration
+⚙️ Changes: Advanced Roadmap to 10-Phase Scale. Added /usr/local/bin/gemini CLI tool.
