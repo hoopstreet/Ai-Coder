@@ -1,7 +1,7 @@
 import os, requests, subprocess, time
 
 TOKEN = os.getenv("TELEGRAM_TOKEN")
-CHAT_ID = int(os.getenv("CHAT_ID"))
+CHAT_ID = int(os.getenv("CHAT_ID", 0))
 
 def send(msg):
     requests.post(
