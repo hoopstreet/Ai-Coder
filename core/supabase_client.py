@@ -6,14 +6,16 @@ def get_config():
     if os.path.exists(path):
         with open(path) as f:
             for line in f:
+                line = line.strip()
                 if '=' in line and not line.startswith('#'):
-                    k, v = line.strip().split('=', 1)
-                    env[k] = v.strip('"').strip("'")
+                    k, v = line.split('=', 1)
+                    env[k.strip()] = v.strip().strip('"').strip("'")
     return env
 
 conf = get_config()
 URL = conf.get("SUPABASE_URL", "").rstrip('/')
-KEY = conf.get("SUPABASE_SERVICE_ROLE", "")
+# Priority to service role for bypassing RLS
+KEY = conf.get("SUPABASE_SERVICE_ROLE") or conf.get("SUPABASE_KEY")
 
 HEADERS = {
     "apikey": KEY,
