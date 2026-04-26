@@ -16,49 +16,48 @@ class AutonomousAgent:
         self.db = CloudDB()
         self.max_retries = 5
 
-    def call_ai(self, prompt, model="gemini-1.5-flash", attempt=0):
+    def call_ai(self, prompt, attempt=0):
         if attempt >= self.max_retries:
-            return "❌ Error: API Authentication Failed on all rotated keys."
+            return "❌ Error: API handshake failed. Verify API Key permissions."
             
         apiKey = self.rotator.get_gemini_key()
-        if not apiKey: return "❌ No API Key found in config.enc."
+        if not apiKey: return "❌ No API Key found."
         
-        # Try v1beta as it is more permissive for newer keys
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={apiKey}"
+        # Matrix of possible successful configurations
+        configs = [
+            {"v": "v1beta", "m": "gemini-1.5-flash-latest"},
+            {"v": "v1", "m": "gemini-1.5-flash"},
+            {"v": "v1beta", "m": "gemini-pro"}
+        ]
+        
+        # Use the config based on the current attempt index to try different combos
+        cfg = configs[attempt % len(configs)]
+        url = f"https://generativelanguage.googleapis.com/{cfg['v']}/models/{cfg['m']}:generateContent?key={apiKey}"
         payload = {"contents": [{"parts": [{"text": prompt}]}]}
         
         try:
-            res = requests.post(url, json=payload, timeout=20)
-            
-            # Handle Quota or Key issues
-            if res.status_code in [429, 403, 400]:
-                self.rotator.rotate_on_fail()
-                return self.call_ai(prompt, model, attempt + 1)
-            
+            res = requests.post(url, json=payload, timeout=15)
             data = res.json()
-            if 'candidates' in data and data['candidates']:
+            
+            if res.status_code == 200 and 'candidates' in data:
                 return data['candidates'][0]['content']['parts'][0]['text']
-            else:
-                return f"❌ API Response Issue: {data.get('error', {}).get('message', 'Unknown')}"
+            
+            # If rejected, rotate key and try next matrix config
+            self.rotator.rotate_on_fail()
+            return self.call_ai(prompt, attempt + 1)
+            
         except Exception as e:
-            # If v1beta fails connection, try v1 as fallback
-            try:
-                url_v1 = f"https://generativelanguage.googleapis.com/v1/models/{model}:generateContent?key={apiKey}"
-                res = requests.post(url_v1, json=payload, timeout=15)
-                data = res.json()
-                if 'candidates' in data: return data['candidates'][0]['content']['parts'][0]['text']
-            except: pass
             return f"❌ Connection Error: {e}"
 
     def run_autonomous_cycle(self, user_query=None):
         self.healer.check_all_systems()
         if user_query:
-            self.healer.show_spinner(f"AI Sync", 1)
+            self.healer.show_spinner(f"Matrix Sync", 1)
             response = self.call_ai(user_query)
             print(f"\n🤖 AGENT RESPONSE:\n{response}")
             self.db.log_event("SUCCESS", f"Query: {user_query[:30]}")
 
 if __name__ == "__main__":
     agent = AutonomousAgent()
-    query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Health check."
+    query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Audit system."
     agent.run_autonomous_cycle(query)
