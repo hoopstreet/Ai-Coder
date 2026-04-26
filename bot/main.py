@@ -13,14 +13,14 @@ def get_updates(offset=None):
     except: return {"result": []}
 
 def handle_command(cmd_text):
-    # Route Telegram commands to Agent CLI
-    print(f"📥 Executing: {cmd_text}")
+    print(f"📥 Telegram Trigger: {cmd_text}")
+    # Forward entire string to Orchestrator
     process = subprocess.Popen(["python3", "/root/Ai-Coder/agent.py", cmd_text], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     stdout, stderr = process.communicate()
     return stdout if stdout else stderr
 
 def main():
-    send("🤖 AI-Coder: Enterprise Commander Online\nLocalhost: Connected to GitHub\nCommands: /Task, /Code, /Select")
+    send("⚡️ AI-CODER ENTERPRISE ONLINE\nPhase 3: File Injection Active\n\nCommands:\n/Select [name]\n/Add_Project [name] [url]\n/Task file:[name.py] [description]")
     offset = None
     while True:
         updates = get_updates(offset)
@@ -29,9 +29,10 @@ def main():
             if "message" in r and "text" in r["message"]:
                 msg = r["message"]["text"]
                 if msg.startswith("/"):
-                    # Remove the slash and send to Agent
-                    res = handle_command(msg[1:])
-                    send(f"✅ Result:\n{res}")
+                    # Clean the command and execute
+                    clean_cmd = msg[1:]
+                    response = handle_command(clean_cmd)
+                    send(response)
         time.sleep(1)
 
 if __name__ == "__main__": main()
