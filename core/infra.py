@@ -1,14 +1,16 @@
 import requests
 import json
 import base64
+import os
 from core.rotator import SmartRotator
 
 class CloudInfra:
     def __init__(self):
         self.rotator = SmartRotator()
-        self.config = self.rotator.config
+        # Fallback to empty dict if config loading failed
+        self.config = getattr(self.rotator, 'config', {})
         self.nf_token = self.config.get("NORTHFLANK_TOKEN")
-        self.docker = self.config.get("DOCKERHUB")
+        self.docker = self.config.get("DOCKERHUB", {})
 
     def get_nf_headers(self):
         return {
@@ -17,22 +19,19 @@ class CloudInfra:
         }
 
     def list_projects(self):
-        """Checks connection to Northflank."""
-        url = "https://api.northflank.com/v1/projects"
-        response = requests.get(url, headers=self.get_nf_headers())
-        if response.status_code == 200:
-            print("✅ Northflank Connection: Active")
-            return response.json()
-        else:
-            print(f"❌ Northflank Error: {response.status_code}")
+        if not self.nf_token:
+            print("❌ No Northflank Token found.")
             return None
+        url = "https://api.northflank.com/v1/projects"
+        try:
+            response = requests.get(url, headers=self.get_nf_headers())
+            if response.status_code == 200:
+                print("✅ Northflank Connection: Active")
+                return response.json()
+        except:
+            pass
+        return None
 
     def trigger_docker_build(self):
-        """Logic for DockerHub integration."""
-        print(f"🐳 Ready to push to: {self.docker['USERNAME']}/ai-coder")
-        # Placeholder for docker-py or shell-out logic
+        print(f"🐳 Ready for DockerHub: {self.docker.get('USERNAME')}")
         return True
-
-if __name__ == "__main__":
-    infra = CloudInfra()
-    infra.list_projects()
