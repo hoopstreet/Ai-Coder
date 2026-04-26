@@ -17,6 +17,7 @@
 ## ☁️ PHASE 5 — PERSISTENT MEMORY (IN PROGRESS)
 - [x] Supabase Transport Engine (`core/supabase_sync.py`).
 - [x] Supabase Client Repair (`core/supabase_client.py`).
+- [x] Autonomous Versioning Engine (`core/version_manager.py`)
 - [ ] Cloud-Side Table Initialization (Rest API).
 - [ ] Vector Embedding of Project Files for "Long Memory".
 

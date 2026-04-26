@@ -8,3 +8,7 @@
 
 ## [v1.0.0 - v1.7.5] PREVIOUS LINEAGE
 - Genesis, iSH Environment, Telegram Bot, and CLI Visuals.
+
+## [v1.7.7] - 2026-04-26
+- **Feature**: Autonomous Versioning Engine integrated.
+- **Merge**: ROADMAP.md updated with auto-increment logic.
