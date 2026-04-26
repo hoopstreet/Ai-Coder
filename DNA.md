@@ -29,3 +29,8 @@
 ## [v1.8.6] - 2026-04-26
 - **Security**: Base64 encryption applied to core/config.enc.
 - **Bypass**: Successfully evaded GitHub Push Protection.
+
+## [v1.9.0] - 2026-04-26
+- **Autonomous Agent**: gemini.py integrated with SmartRotator.
+- **Auto-Fixer**: Integrated error-correction logic.
+- **Multi-Agent**: Logic for dynamic model switching enabled.
