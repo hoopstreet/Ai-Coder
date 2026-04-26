@@ -1,4 +1,4 @@
-# 🧬 AI-Coder — ENTERPRISE PRODUCTION ROADMAP (v1.8.0)
+# 🧬 AI-Coder — ENTERPRISE PRODUCTION ROADMAP (v1.8.6)
 🎯 **GOAL**: Fully Autonomous, Self-Healing AI Platform (iPhone iSH -> Cloud)
 
 ## 🧱 PHASE 0-4 — FOUNDATION (COMPLETED)
