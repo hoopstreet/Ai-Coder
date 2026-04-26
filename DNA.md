@@ -43,3 +43,8 @@
 - **Autonomous Self-Healer**: Visual audit engine deployed.
 - **Visual UI**: Spinner logic for iSH terminal.
 - **Health Loop**: Every command starts with a sub-system check.
+
+## [v2.1.0] - 2026-04-26
+- **Supabase Sync**: Every audit and query is now logged to the cloud database.
+- **Persistence**: System health history preserved globally.
+- **Agent v2.1**: Full integration of rotator, healer, infra, and db.
