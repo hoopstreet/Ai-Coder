@@ -1,6 +1,11 @@
-.venv/
+# Massive folders
+node_modules/
 __pycache__/
-*.pyc
+.venv/
+env/
+venv/
+*.log
+.DS_Store
+
+# Credentials (redundant to git as they are in .env)
 .env
-.cache/
-.pip/
