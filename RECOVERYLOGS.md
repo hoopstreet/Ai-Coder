@@ -16,3 +16,11 @@
 
 ### [v2.6.1 - Sun Apr 26 09:55:37 2026]
 Failover needed....
+
+# 🐝 SWARM REPORT v4.0.0 [Sun Apr 26 10:54:28 2026]
+
+## 🏛️ Hive Legacy
+Error: 'choices'
+
+## 🚑 Hive Recovery
+Error: 'choices'
