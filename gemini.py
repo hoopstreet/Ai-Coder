@@ -5,11 +5,9 @@ class SwarmGeneral:
         self.repo = "/root/Ai-Coder"
         self.or_key = "sk-or-v1-d44bb63c9aeebdlbd139026679ee75c3077322c75e02615200367c49ecb4d11"
         self.gemini_keys = ["AIzaSyDBHr3FRFAXexCYVYvolHWozEzsy5nZIas", "AIzaSyBRmOlHL4NZ5k_8mOKFvO6QwIs83KtkTxA", "AIzaSyCvqCQu0TCWnmEDFZmV1_P_fKxcw4kOBTY", "AIzaSyC2RY14NPQYVN5NQZJciivyQuWME9Hc9Yg", "AIzaSyBTyzstJWpdKAjGHMfBAINfd8c7kpL0XAY"]
-        
-        # Team Definition
         self.teams = {
-            "Hive_Legacy": {"head": "google/gemini-pro-1.5", "workers": 4, "focus": "v1.0.0-v2.7.0 upgrades"},
-            "Hive_Recovery": {"head": "anthropic/claude-3.5-sonnet", "workers": 4, "focus": "Disaster Recovery & Deployment Merges"}
+            "Hive_Legacy": {"head": "google/gemini-pro-1.5", "focus": "v1.0.0-v2.7.0 upgrades"},
+            "Hive_Recovery": {"head": "anthropic/claude-3.5-sonnet", "focus": "Disaster Recovery & Deployment Merges"}
         }
 
     def log(self, team, msg):
@@ -18,16 +16,14 @@ class SwarmGeneral:
         print(log_msg)
 
     def call_head(self, team, task):
-        """Paid OpenRouter Head Agent Call"""
         model = self.teams[team]["head"]
         headers = {"Authorization": f"Bearer {self.or_key}", "Content-Type": "application/json"}
         try:
             res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, 
-                json={"model": model, "messages": [{"role": "system", "content": f"You are the Head Agent of {team}. Role: {self.teams[team]['focus']}"}, {"role": "user", "content": task}]}, timeout=45)
+                json={"model": model, "messages": [{"role": "system", "content": f"Head of {team}. Role: {self.teams[team]['focus']}"}, {"role": "user", "content": task}]}, timeout=45)
             return res.json()['choices'][0]['message']['content']
         except Exception as e:
-            self.log(team, f"Head Agent Error: {str(e)}")
-            return None
+            return f"Error: {str(e)}"
 
     def sync_all(self):
         try:
@@ -44,14 +40,10 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "AUTO_SYNC":
         general.sync_all()
     else:
-        # Direct Command Routing
         task = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Status Report"
         general.log("General", f"Executing Mission: {task}")
-        # Divide task between Hives
-        legacy_report = general.call_head("Hive_Legacy", f"Audit old versions and prepare upgrade path for: {task}")
-        recovery_report = general.call_head("Hive_Recovery", f"Analyze disaster recovery for deployments and missing code for: {task}")
-        
+        leg = general.call_head("Hive_Legacy", f"Task: {task}")
+        rec = general.call_head("Hive_Recovery", f"Task: {task}")
         with open(f"{general.repo}/RECOVERYLOGS.md", "a") as f:
-            f.write(f"\n\n# 🐝 SWARM REPORT v4.0.0 [{time.ctime()}]\n\n## 🏛️ Hive Legacy (Archaeology)\n{legacy_report}\n\n## 🚑 Hive Recovery (Disaster Response)\n{recovery_report}")
-        
+            f.write(f"\n\n# 🐝 SWARM REPORT v4.0.0 [{time.ctime()}]\n\n## 🏛️ Hive Legacy\n{leg}\n\n## 🚑 Hive Recovery\n{rec}")
         general.sync_all()
