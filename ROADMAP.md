@@ -1,48 +1,41 @@
-# 🧬 AI-Coder — ENTERPRISE PRODUCTION ROADMAP (v1.5.0)
-🎯 GOAL: A Self-Evolving, Multi-Project AI Developer Platform controlled via Telegram.
+# 🧬 AI-Coder — OFFICIAL PRODUCTION ROADMAP (v1.6.0)
+🎯 GOAL: Telegram-Triggered Autonomous AI Platform (iPhone -> Cloud)
+
+## 🏗️ INFRASTRUCTURE TOOLS & ROLES
+- **iSH Shell**: Local Mobile Environment (The Command Center)
+- **Gemini CLI**: Local AI Brain for shell-level tasks.
+- **Telegram Bot**: Remote Commander for global control.
+- **Supabase**: Persistent Memory & Secure Credential Vault.
+- **Northflank**: Cloud Scale deployment for 24/7 uptime.
 
 ## 🧱 PHASE 0 — FOUNDATION (COMPLETED)
-- [x] iSH Shell Environment (iPhone/Mobile optimized)
-- [x] GitHub Repository Integration (hoopstreet/Ai-Coder)
-- [x] DNA.md Evolutionary Tracking system
-- [x] Initial Orchestrator & CLI
+- [x] iSH Shell Environment setup.
+- [x] GitHub Repository Link (hoopstreet/Ai-Coder).
+- [x] DNA.md Evolutionary Tracking.
 
-## 🧠 PHASE 1 — MULTI-PROJECT ISOLATION (COMPLETED)
-- [x] Project Manager with directory isolation in `/projects/`
-- [x] Subprocess compatibility for iSH Python 3.9
-- [x] `/Add_Project` and `/Select` command logic
+## 🧠 PHASE 1 — MULTI-PROJECT SYSTEM (COMPLETED)
+- [x] Directory Isolation (/projects/).
+- [x] Project Manager (/Add_Project, /Select).
+- [x] Memory.json isolation per project.
 
 ## 🤖 PHASE 2 — TELEGRAM COMMANDER (COMPLETED)
-- [x] Telegram Bot API Link (Token: 8162842268:...)
-- [x] Background service for real-time polling
-- [x] Message routing to the core Orchestrator
+- [x] Background Polling Service (main.py).
+- [x] Command Routing: /Select, /Add_Project, /Task, /Code.
 
-## 🧪 PHASE 3 — ENGINE ACTIVATION (COMPLETED)
-- [x] Gemini Brain connection via HTTPX
-- [x] `FileInjector` core for physical file creation on storage
-- [x] Supabase Cloud task logging (ID: ixdukafvxq...)
+## 🧪 PHASE 3 — AI AGENT PIPELINE (COMPLETED)
+- [x] Gemini Brain v2.5-Flash integration.
+- [x] File Injector Core (Automated code writing).
+- [x] Supabase Task Logging & Success Verification.
 
-## 🔗 PHASE 4 — GIT & CLI ECOSYSTEM (IN PROGRESS)
-- [x] iSH Gemini CLI Tool (`/usr/local/bin/gemini`)
-- [ ] Automated `vX.X.X` tagging logic
-- [ ] Self-committing engine (Auto-pushing changes to GitHub)
+## 🔗 PHASE 4 — GIT & AUTO-TAGGING (IN PROGRESS)
+- [x] iSH Gemini CLI setup (Manual Brain Access).
+- [ ] Automated Git Commit on /Code success.
+- [ ] Semantic Versioning (v1.x.x) auto-tagging.
 
-## ☁️ PHASE 5 — PERSISTENT MEMORY
-- [ ] Long-term project memory (Vector embedding of local files)
-- [ ] Config Manager for encrypted API key rotation
-- [ ] Cross-device session synchronization
-
-## 🔄 PHASE 6-10 — THE ROAD TO ENTERPRISE
-- [ ] **PHASE 6**: Northflank Auto-Deployment (Cloud scaling)
-- [ ] **PHASE 7**: Sandbox Code Execution (Automated unit testing)
-- [ ] **PHASE 8**: Multi-User Access Control (Team collaboration)
-- [ ] **PHASE 9**: Multi-Speaker TTS (Voice-activated coding)
-- [ ] **PHASE 10**: Enterprise Analytics Dashboard (Web Frontend)
-
----
-### 🛠 SYSTEM ARCHITECTURE SUMMARY
-- **Location**: `/root/Ai-Coder`
-- **Core Engine**: `/root/Ai-Coder/core/orchestrator.py`
-- **Brain**: `/root/Ai-Coder/core/ai_brain.py` (Gemini-2.5-Flash)
-- **Projects**: Isolated in `/root/Ai-Coder/projects/[name]`
-- **Sync**: GitHub remote `hoopstreet/Ai-Coder` via Personal Access Token
+## ☁️ PHASE 5-10 — ENTERPRISE SCALING
+- [ ] Phase 5: Vector Memory (Project Context Learning).
+- [ ] Phase 6: Northflank Cloud Deployment.
+- [ ] Phase 7: Sandbox Execution (Safe Code Testing).
+- [ ] Phase 8: Multi-User / Enterprise Dashboard.
+- [ ] Phase 9: Multi-Speaker TTS Voice Control.
+- [ ] Phase 10: Full Autonomous SaaS Operation.
