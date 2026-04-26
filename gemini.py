@@ -1,4 +1,4 @@
-import os, sys, requests, json, time, subprocess
+import os, sys, requests, json, time, subprocess, re
 
 class AutonomousAgent:
     def __init__(self):
@@ -10,32 +10,39 @@ class AutonomousAgent:
             "AIzaSyC2RY14NPQYVN5NQZJciivyQuWME9Hc9Yg",
             "AIzaSyBTyzstJWpdKAjGHMfBAINfd8c7kpL0XAY"
         ]
+        self.repo_path = "/root/Ai-Coder"
 
     def log(self, msg):
-        with open('master.log', 'a') as f:
+        with open(f'{self.repo_path}/master.log', 'a') as f:
             f.write(f"[{time.ctime()}] {msg}\n")
         print(f"🤖 {msg}")
 
-    def auto_fix(self, error_msg):
-        self.log(f"🛠 AUTO-RESOLVING: {error_msg[:50]}")
-        # Self-correction logic: re-link paths and check environment
-        subprocess.run(["hash", "-r"])
-        if "FileNotFoundError" in error_msg:
-            os.chdir("/root/Ai-Coder")
-        return self.run("Finalize missing upgrades and merge code setup.")
+    def sync_github(self):
+        try:
+            subprocess.run(["git", "add", "."], check=True)
+            subprocess.run(["git", "commit", "-m", f"Autonomic Sync: {time.ctime()}"], check=True)
+            subprocess.run(["git", "push", "origin", "main", "--force"], check=True)
+            self.log("🌍 GitHub Sync Successful.")
+        except: pass
 
     def run(self, task):
-        self.log(f"Backtracking/Merging Task: {task}")
-        # Version analysis loop simulation
+        self.log(f"Mission: {task}")
+        # Core Engine Logic
         for key in self.gemini_keys:
             try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
-                res = requests.post(url, json={"contents": [{"parts": [{"text": task}]}]}, timeout=20)
-                return res.json()['candidates'][0]['content']['parts'][0]['text']
+                res = requests.post(url, json={"contents": [{"parts": [{"text": task}]}]}, timeout=15)
+                text = res.json()['candidates'][0]['content']['parts'][0]['text']
+                self.log("✅ Engine Response Received.")
+                return text
             except: continue
-        return "Failover mode active."
+        return "Failover needed."
 
 if __name__ == "__main__":
     agent = AutonomousAgent()
     if len(sys.argv) > 1:
-        print(agent.run(" ".join(sys.argv[1:])))
+        res = agent.run(" ".join(sys.argv[1:]))
+        # Log to documentary
+        with open("/root/Ai-Coder/RECOVERYLOGS.md", "a") as f:
+            f.write(f"\n\n### [v2.6.1 - {time.ctime()}]\n{res[:300]}...")
+        agent.sync_github()
