@@ -1,41 +1,53 @@
-# 🧬 AI-Coder — OFFICIAL PRODUCTION ROADMAP (v1.6.0)
+# 🧬 AI-Coder — ENTERPRISE PRODUCTION ROADMAP (v1.7.5)
 🎯 GOAL: Telegram-Triggered Autonomous AI Platform (iPhone -> Cloud)
 
 ## 🏗️ INFRASTRUCTURE TOOLS & ROLES
-- **iSH Shell**: Local Mobile Environment (The Command Center)
-- **Gemini CLI**: Local AI Brain for shell-level tasks.
-- **Telegram Bot**: Remote Commander for global control.
-- **Supabase**: Persistent Memory & Secure Credential Vault.
-- **Northflank**: Cloud Scale deployment for 24/7 uptime.
+- **iSH Shell**: Local Mobile Command Center.
+- **Gemini CLI**: Local AI Agent for file manipulation and shell logic.
+- **Telegram Bot**: Remote Commander for project tasks.
+- **Supabase**: Persistent Memory & Global Credential Vault.
+- **Northflank**: 24/7 Cloud Engine for Enterprise workloads.
 
-## 🧱 PHASE 0 — FOUNDATION (COMPLETED)
+## 🧱 PHASE 0 — MOBILE FOUNDATION (COMPLETED)
 - [x] iSH Shell Environment setup.
 - [x] GitHub Repository Link (hoopstreet/Ai-Coder).
 - [x] DNA.md Evolutionary Tracking.
 
-## 🧠 PHASE 1 — MULTI-PROJECT SYSTEM (COMPLETED)
+## 🧠 PHASE 1 — MULTI-PROJECT ENGINE (COMPLETED)
 - [x] Directory Isolation (/projects/).
-- [x] Project Manager (/Add_Project, /Select).
+- [x] Project Management CLI (/Add_Project, /Select).
 - [x] Memory.json isolation per project.
 
 ## 🤖 PHASE 2 — TELEGRAM COMMANDER (COMPLETED)
-- [x] Background Polling Service (main.py).
+- [x] Background Polling Service (bot/main.py).
 - [x] Command Routing: /Select, /Add_Project, /Task, /Code.
 
-## 🧪 PHASE 3 — AI AGENT PIPELINE (COMPLETED)
-- [x] Gemini Brain v2.5-Flash integration.
-- [x] File Injector Core (Automated code writing).
-- [x] Supabase Task Logging & Success Verification.
+## 🧪 PHASE 3 — AI INJECTION PIPELINE (COMPLETED)
+- [x] Gemini Brain v2.5-Flash integration (ai_brain.py).
+- [x] File Injector Core (injector.py).
+- [x] Supabase Task Logging & Verification.
 
-## 🔗 PHASE 4 — GIT & AUTO-TAGGING (IN PROGRESS)
-- [x] iSH Gemini CLI setup (Manual Brain Access).
-- [ ] Automated Git Commit on /Code success.
-- [ ] Semantic Versioning (v1.x.x) auto-tagging.
+## 🔗 PHASE 4 — AGENT CLI & GIT AUTOMATION (COMPLETED)
+- [x] iSH Gemini CLI (/usr/local/bin/gemini):
+    - Visual Feedback: Integrated 🌀 processing visuals for mobile feedback.
+    - Task Result Preview: Instant terminal preview of generated logic.
+- [x] Auth Bypass: Hardcoded Git remote URL with token for password-less git push on mobile.
+- [x] Auto-Sync Engine: core/auto_sync.sh script to auto-commit roadmap progress.
 
-## ☁️ PHASE 5-10 — ENTERPRISE SCALING
-- [ ] Phase 5: Vector Memory (Project Context Learning).
-- [ ] Phase 6: Northflank Cloud Deployment.
-- [ ] Phase 7: Sandbox Execution (Safe Code Testing).
-- [ ] Phase 8: Multi-User / Enterprise Dashboard.
-- [ ] Phase 9: Multi-Speaker TTS Voice Control.
-- [ ] Phase 10: Full Autonomous SaaS Operation.
+## ☁️ PHASE 5 — PERSISTENT MEMORY & VAULT (IN PROGRESS)
+- [ ] Supabase Real-time Project Monitoring.
+- [ ] Vector Embedding of Project Files for "Long Memory".
+- [ ] Secret Manager: Securely rotating API keys.
+
+## 🔄 PHASE 6-10 — THE ROAD TO ENTERPRISE
+- [ ] PHASE 6: Northflank Scaling (Cloud migration).
+- [ ] PHASE 7: Sandbox Execution (pytest integration).
+- [ ] PHASE 8: Multi-User Architecture & Team Org.
+- [ ] PHASE 9: Multi-Speaker TTS (Voice coding).
+- [ ] PHASE 10: SaaS Dashboard (Full Web UI).
+
+### 🛠 TECHNICAL ARCHITECTURE SUMMARY
+- Core Path: /root/Ai-Coder
+- CLI Tool: /usr/local/bin/gemini
+- Environment: Python 3.9 (Alpine Linux)
+- Primary Model: gemini-2.5-flash-preview-09-2025
