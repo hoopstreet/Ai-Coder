@@ -48,3 +48,7 @@
 - **Supabase Sync**: Every audit and query is now logged to the cloud database.
 - **Persistence**: System health history preserved globally.
 - **Agent v2.1**: Full integration of rotator, healer, infra, and db.
+
+## [v2.2.0] - 2026-04-26
+- **Certification**: Full repository audit completed.
+- **State**: Enterprise Grade. All sub-systems (Rotator, Healer, Infra, DB) synchronized.
