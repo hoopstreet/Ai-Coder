@@ -1,13 +1,22 @@
-import httpx, os
+import os
+import json
 
-class SupabaseClient:
-    def __init__(self):
-        self.url = "https://ixdukafvxqermhgoczou.supabase.co"
-        self.key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4ZHVrYWZ2eHFlcm1oZ29jem91Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTc1MjM3MiwiZXhwIjoyMDkxMzI4MzcyfQ.R4syxxjfZNKRlMtCfOHpY-XMwZ1LF3RJnQNacBc-dHk"
-        self.headers = {"apikey": self.key, "Authorization": f"Bearer {self.key}", "Content-Type": "application/json"}
+# SUPABASE CONFIGURATION
+URL = "https://your-project-id.supabase.co/rest/v1/vault"
+# Note: HEADERS are usually generated with the API Key
+HEADERS = {
+    "apikey": "YOUR_SUPABASE_ANON_KEY",
+    "Authorization": "Bearer YOUR_SUPABASE_ANON_KEY",
+    "Content-Type": "application/json",
+    "Prefer": "return=minimal"
+}
 
-    def log_task(self, project_name, task, status):
-        data = {"project_name": project_name, "task": task, "status": status}
-        try:
-            return httpx.post(f"{self.url}/rest/v1/tasks", headers=self.headers, json=data)
-        except: return None
+def get_config():
+    """Helper to load local config/keys"""
+    config_path = "/root/Ai-Coder/core/config.json"
+    if os.path.exists(config_path):
+        with open(config_path, 'r') as f:
+            return json.load(f)
+    return {}
+
+print("✅ core/supabase_client.py: Repaired with HEADERS and URL.")
