@@ -1,29 +1,23 @@
-# 🧬 AI-Coder — ENTERPRISE PRODUCTION ROADMAP (v1.7.6)
-🎯 GOAL: Telegram-Triggered Autonomous AI Platform (iPhone -> Cloud)
-
-## 🏗️ INFRASTRUCTURE TOOLS & ROLES
-- **iSH Shell**: Local Mobile Command Center.
-- **Gemini CLI**: Local AI Agent for file manipulation.
-- **Telegram Bot**: Remote Commander.
-- **Supabase**: Persistent Memory & Global Vault.
-- **Northflank**: 24/7 Cloud Engine.
+# 🧬 AI-Coder — ENTERPRISE PRODUCTION ROADMAP (v1.8.0)
+🎯 **GOAL**: Fully Autonomous, Self-Healing AI Platform (iPhone iSH -> Cloud)
 
 ## 🧱 PHASE 0-4 — FOUNDATION (COMPLETED)
-- [x] iSH Environment & Git Automation (Token Bypass).
-- [x] Multi-Project Engine & Brain Integration.
-- [x] Telegram Commander Bot.
-- [x] CLI 🌀 Visual UX for Mobile.
+- [x] iSH Mobile Environment & Visual CLI (`gemini`).
+- [x] Telegram Commander Bot & Multi-Project Engine.
+- [x] **Auto-Fixer**: Real-time correction of terminal-provided code.
+- [x] **Zero-Friction Auth**: Permanent Git/API token bypass.
 
-## ☁️ PHASE 5 — PERSISTENT MEMORY (IN PROGRESS)
-- [x] Supabase Transport Engine (`core/supabase_sync.py`).
-- [x] Supabase Client Repair (`core/supabase_client.py`).
-- [x] Autonomous Versioning Engine (`core/version_manager.py`)
-- [ ] Cloud-Side Table Initialization (Rest API).
-- [ ] Vector Embedding of Project Files for "Long Memory".
+## ⚡ PHASE 5 — CLOUD MEMORY & SMART LOGIC (COMPLETED/IN-PROGRESS)
+- [x] **Autonomous Versioning**: System auto-updates DNA.md/Roadmap (`v1.7.7+`).
+- [x] **Smart Credential Rotator**: Automatic key-switching on API limits.
+- [x] **Transport Engine**: Supabase Sync (`core/supabase_sync.py`).
+- [x] **Multi-Model Switching**: Automatic Agent selection (Flash/Pro).
+- [ ] Vector Embedding for Global Context.
 
-## 🔄 FUTURE PHASES (6-10)
-- [ ] PHASE 6: Northflank Scaling.
-- [ ] PHASE 7: Sandbox Execution (pytest).
-- [ ] PHASE 8: Multi-User Architecture.
-- [ ] PHASE 9: Multi-Speaker TTS.
-- [ ] PHASE 10: SaaS Dashboard (Full Web UI).
+## 🚀 PHASE 6 — AUTONOMOUS CLOUD OPS (NEXT)
+- [ ] **Auto-Deploy**: Direct trigger to Northflank production.
+- [ ] **Credential Auto-Creation**: Automated token generation for new services.
+- [ ] **Self-Healing Sandbox**: Automatic pytest and error recovery in Cloud.
+
+## 🔄 FUTURE SCALING (7-10)
+- [ ] Multi-User SaaS & TTS Dashboard.

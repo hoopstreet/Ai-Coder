@@ -12,3 +12,6 @@
 ## [v1.7.7] - 2026-04-26
 - **Feature**: Autonomous Versioning Engine integrated.
 - **Merge**: ROADMAP.md updated with auto-increment logic.
+## [v1.8.0] - 2026-04-26
+- **Enterprise Merge**: Integrated Rotators, Auto-Fixers, and Multi-Agent logic.
+- **Roadmap Sync**: Full file analysis completed and merged.

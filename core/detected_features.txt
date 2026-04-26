@@ -1,0 +1,7 @@
+- [x] **Auto-Fixer Engine**: Automatic syntax repair for iSH code blocks.
+- [x] **Smart Auth-Link**: Permanent PAT injection & auto-reconnect.
+- [x] **Credential Rotator**: Multi-key switching for Gemini/OpenRouter (Rate Limit bypass).
+- [x] **Cloud Tool-Connect**: Automatic integration with Northflank & DockerHub.
+- [x] **Multi-Agent Orchestrator**: Dynamic switching between Flash and Pro models.
+- [x] **Zero-Config Setup**: Automatic dependency & environment initialization.
+- [x] **Smart-Sleep logic**: Auto-cooldown and credential hopping on 429 errors.
