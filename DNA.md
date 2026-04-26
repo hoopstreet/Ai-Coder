@@ -34,3 +34,7 @@
 - **Autonomous Agent**: gemini.py integrated with SmartRotator.
 - **Auto-Fixer**: Integrated error-correction logic.
 - **Multi-Agent**: Logic for dynamic model switching enabled.
+
+## [v1.9.5] - 2026-04-26
+- **Infra Bridge**: core/infra.py connected to Northflank/DockerHub.
+- **Auto-Deploy**: Initial deployment hooks added to gemini.py.

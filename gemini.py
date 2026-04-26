@@ -4,45 +4,40 @@ import requests
 import json
 import time
 from core.rotator import SmartRotator
+from core.infra import CloudInfra
 
 class AutonomousAgent:
     def __init__(self):
         self.rotator = SmartRotator()
-        self.history = []
-        self.system_prompt = "You are an Enterprise AI-Coder Agent. Output only raw code or shell commands."
+        self.infra = CloudInfra()
+        self.system_prompt = "You are an Enterprise AI-Coder. Output only raw code or shell commands."
 
     def call_ai(self, prompt, model="gemini-2.5-flash-preview-09-2025"):
         apiKey = self.rotator.get_gemini_key()
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={apiKey}"
+        payload = {"contents": [{"parts": [{"text": prompt}]}]}
         
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "systemInstruction": {"parts": [{"text": self.system_prompt}]}
-        }
-
         for attempt in range(5):
             try:
-                response = requests.post(url, json=payload, timeout=30)
-                if response.status_code == 429:
+                res = requests.post(url, json=payload, timeout=30)
+                if res.status_code == 429:
                     self.rotator.rotate_on_fail()
                     return self.call_ai(prompt, model)
-                
-                result = response.json()
-                return result['candidates'][0]['content']['parts'][0]['text']
-            except Exception as e:
-                print(f"⚠️ Attempt {attempt+1} failed: {e}")
-                time.sleep(2 ** attempt)
-        return "❌ Error: AI exhausted."
+                return res.json()['candidates'][0]['content']['parts'][0]['text']
+            except:
+                time.sleep(2**attempt)
+        return "❌ Exhausted."
 
-    def auto_fix_code(self, error_log, broken_code):
-        print("🔧 Auto-Fixer Triggered...")
-        fix_prompt = f"Fix this code based on error: {error_log}\n\nCode:\n{broken_code}"
-        return self.call_ai(fix_prompt)
+    def deploy_flow(self):
+        print("🚀 Initializing Cloud Deployment...")
+        self.infra.list_projects()
+        self.infra.trigger_docker_build()
 
 if __name__ == "__main__":
     agent = AutonomousAgent()
-    if len(sys.argv) > 1:
-        query = " ".join(sys.argv[1:])
-        print(agent.call_ai(query))
+    if len(sys.argv) > 1 and sys.argv[1] == "deploy":
+        agent.deploy_flow()
+    elif len(sys.argv) > 1:
+        print(agent.call_ai(" ".join(sys.argv[1:])))
     else:
-        print("🤖 AI-Coder v1.9.0 Ready. Usage: python3 gemini.py 'your prompt'")
+        print("🤖 AI-Coder v1.9.5 | Use 'deploy' or ask a prompt.")
