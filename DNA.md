@@ -18,3 +18,7 @@
 - **Feature**: Detailed 10-Phase Roadmap established.
 - **Feature**: Archive system created (`core/gemini_cli_backup.py`).
 - **Status**: Ready for Phase 5 (Cloud Memory).
+
+[v1.7.6] - 2026-04-26
+🎯 Milestone: Supabase Transport Engine Live.
+⚙️ Upgrade: HTTPX Vault sync implemented for Cloud Memory.
