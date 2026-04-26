@@ -1,67 +1,46 @@
-import httpx
-import asyncio
-import os
+import telebot
 import subprocess
+import os
 
-def get_env():
-    env = {}
-    path = '/root/Ai-Coder/.env'
-    if os.path.exists(path):
-        with open(path) as f:
-            for line in f:
-                if '=' in line:
-                    k, v = line.strip().split('=', 1)
-                    env[k] = v.strip('"').strip("'")
-    return env
+# Replace 'YOUR_TELEGRAM_BOT_TOKEN' with your actual bot token.  DO NOT hardcode the token directly in the code.
+# Instead, retrieve it from an environment variable or a secure configuration file.
+BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN') # Example: Read token from environment variable
 
-ENV = get_env()
-TOKEN = ENV.get('TELEGRAM_BOT_TOKEN')
-API_URL = f"https://api.telegram.org/bot{TOKEN}"
+if not BOT_TOKEN:
+    raise ValueError("Telegram bot token not found.  Please set the TELEGRAM_BOT_TOKEN environment variable.")
 
-async def send_msg(chat_id, text):
-    async with httpx.AsyncClient() as client:
-        await client.post(f"{API_URL}/sendMessage", json={"chat_id": chat_id, "text": text})
+bot = telebot.TeleBot(BOT_TOKEN)
 
-async def main():
-    if not TOKEN:
-        print("❌ Error: TELEGRAM_BOT_TOKEN not found in .env")
-        return
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+    bot.reply_to(message, "Hello! I'm a bot that can run tasks. Send me a task to execute.")
 
-    print("🤖 Telegram Bot is listening for /build commands...")
-    offset = None
-    
-    while True:
-        try:
-            url = f"{API_URL}/getUpdates"
-            if offset: url += f"?offset={offset}"
-            
-            async with httpx.AsyncClient() as client:
-                resp = await client.get(url, timeout=10.0)
-                updates = resp.json().get("result", [])
-                
-                for update in updates:
-                    offset = update["update_id"] + 1
-                    msg = update.get("message", {})
-                    chat_id = msg.get("chat", {}).get("id")
-                    text = msg.get("text", "")
+@bot.message_handler(func=lambda message: True)
+def echo_all(message):
+    task = message.text
+    bot.reply_to(message, "Executing task...")
 
-                    if text.startswith("/build "):
-                        task = text.replace("/build ", "")
-                        await send_msg(chat_id, f"🧬 Starting AI Orchestrator for: {task}")
-                        
-                        # Trigger the multi-key agent
-                        proc = subprocess.run(
-                            ["python3", "/root/Ai-Coder/agent.py", task],
-                            capture_output=True, text=True
-                        )
-                        
-                        result = proc.stdout if proc.stdout else proc.stderr
-                        await send_msg(chat_id, f"✅ Result:\n{result[-500:]}")
+    try:
+        # Safely construct the command to execute agent.py with the user's task.
+        # Consider using shlex.quote to properly escape the task string for shell execution if needed.
+        command = ['python', 'agent.py', task]
 
-            await asyncio.sleep(3)
-        except Exception as e:
-            print(f"Bot Error: {e}")
-            await asyncio.sleep(5)
+        # Execute the command, capturing both stdout and stderr.
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+        # Decode the output from bytes to string.
+        stdout_str = stdout.decode('utf-8')
+        stderr_str = stderr.decode('utf-8')
+
+        # Construct the reply message.
+        reply = f"Task completed.\nStdout:\n{stdout_str}\nStderr:\n{stderr_str}"
+
+        bot.reply_to(message, reply)
+
+    except Exception as e:
+        bot.reply_to(message, f"Error executing task: {str(e)}")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    print("Starting Telegram bot...")
+    bot.infinity_polling()
