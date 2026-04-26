@@ -1,28 +1,30 @@
 import json
-import time
+import base64
 import os
 
-CONFIG_PATH = "/root/Ai-Coder/core/config.json"
+ENC_PATH = "/root/Ai-Coder/core/config.enc"
 
 class SmartRotator:
     def __init__(self):
+        self.config = {}
         try:
-            with open(CONFIG_PATH, "r") as f:
-                self.config = json.load(f)
-            self.gemini_index = 0
+            if os.path.exists(ENC_PATH):
+                with open(ENC_PATH, "r") as f:
+                    encoded_data = f.read()
+                    decoded_data = base64.b64decode(encoded_data).decode('utf-8')
+                    self.config = json.loads(decoded_data)
+            else:
+                print(f"❌ Error: {ENC_PATH} missing.")
         except Exception as e:
-            print(f"❌ Config Error: {e}")
+            print(f"❌ Decryption Error: {e}")
+        self.gemini_index = 0
 
     def get_gemini_key(self):
-        return self.config["GEMINI_KEYS"][self.gemini_index]
+        keys = self.config.get("GEMINI_KEYS", [])
+        return keys[self.gemini_index] if keys else None
 
     def rotate_on_fail(self):
-        self.gemini_index = (self.gemini_index + 1) % len(self.config["GEMINI_KEYS"])
-        print(f"🔄 Switching to Key #{self.gemini_index}...")
-        if self.gemini_index == 0:
-            print("⏳ Full cooldown triggered (60s).")
-            time.sleep(60)
-
-if __name__ == "__main__":
-    rotator = SmartRotator()
-    print(f"🚀 Rotator Active. Key: {rotator.get_gemini_key()[:10]}...")
+        keys = self.config.get("GEMINI_KEYS", [])
+        if keys:
+            self.gemini_index = (self.gemini_index + 1) % len(keys)
+            print(f"🔄 Switched to Gemini Key #{self.gemini_index}")
