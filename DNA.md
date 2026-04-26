@@ -38,3 +38,8 @@
 ## [v1.9.5] - 2026-04-26
 - **Infra Bridge**: core/infra.py connected to Northflank/DockerHub.
 - **Auto-Deploy**: Initial deployment hooks added to gemini.py.
+
+## [v2.0.0] - 2026-04-26
+- **Autonomous Self-Healer**: Visual audit engine deployed.
+- **Visual UI**: Spinner logic for iSH terminal.
+- **Health Loop**: Every command starts with a sub-system check.
