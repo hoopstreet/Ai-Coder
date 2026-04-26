@@ -14,33 +14,39 @@ class AutonomousAgent:
         self.infra = CloudInfra()
         self.healer = AutoHealer()
         self.db = CloudDB()
-        self.system_prompt = "You are a Self-Healing Enterprise AI Agent. Output only technical results."
+        self.max_retries = 5
 
-    def call_ai(self, prompt, model="gemini-2.0-flash"):
+    def call_ai(self, prompt, model="gemini-1.5-flash", attempt=0):
+        if attempt >= self.max_retries:
+            return "❌ Error: All API keys exhausted or model unavailable."
+            
         apiKey = self.rotator.get_gemini_key()
         if not apiKey: return "❌ No API Key available."
         
-        # Public v1beta endpoint with stable model name
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={apiKey}"
+        # Use v1 endpoint for 1.5-flash stability
+        url = f"https://generativelanguage.googleapis.com/v1/models/{model}:generateContent?key={apiKey}"
         payload = {"contents": [{"parts": [{"text": prompt}]}]}
         
         try:
-            res = requests.post(url, json=payload, timeout=30)
+            res = requests.post(url, json=payload, timeout=20)
             data = res.json()
             
-            if res.status_code == 429:
+            if res.status_code == 429 or res.status_code == 404:
                 self.rotator.rotate_on_fail()
-                return self.call_ai(prompt, model)
+                return self.call_ai(prompt, model, attempt + 1)
             
             if 'candidates' in data and data['candidates']:
                 return data['candidates'][0]['content']['parts'][0]['text']
             else:
-                return f"❌ API Error: {data.get('error', {}).get('message', 'Unknown Error')}"
+                msg = data.get('error', {}).get('message', 'Unknown Error')
+                return f"❌ API Error: {msg}"
         except Exception as e:
-            return f"❌ Execution Error: {e}"
+            return f"❌ Connection Error: {e}"
 
     def run_autonomous_cycle(self, user_query=None):
-        has_issues = self.healer.check_all_systems()
+        # Health check without blocking
+        self.healer.check_all_systems()
+        
         if user_query:
             self.healer.show_spinner(f"AI Processing", 1)
             response = self.call_ai(user_query)
@@ -49,5 +55,5 @@ class AutonomousAgent:
 
 if __name__ == "__main__":
     agent = AutonomousAgent()
-    query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Status check."
+    query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Check system health."
     agent.run_autonomous_cycle(query)
