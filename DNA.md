@@ -1,15 +1,20 @@
-# 🧬 DNA.md — Project Evolution Log
-[v1.6.0] - 2026-04-26
-🎯 Milestone: Full Roadmap Adoption & CLI Integration Complete.
+# 🧬 DNA.md — SYSTEM EVOLUTIONARY LOG
 
-[v1.7.0] - 2026-04-26
-🎯 Milestone: Advanced Roadmap to Phase 4 Complete.
-⚙️ Status: Git Auth fixed. CLI active. Ready for Cloud Integration.
+## [v1.0.0 - v1.3.0] INITIAL GENESIS
+- Established iSH environment and basic Agent CLI.
+- Project isolation logic implemented.
 
-[v1.7.5] - 2026-04-26
-🎯 Milestone: Detailed 10-Phase Roadmap Merged.
-⚙️ Upgrades: Added CLI visual feedback, project isolation, and git automation details to the master contract.
+## [v1.3.1 - v1.5.0] BRAIN & TELEGRAM ACTIVATION
+- Integrated Gemini-2.5-Flash API.
+- Launched Telegram Bot commander.
+- Created `/usr/local/bin/gemini` CLI tool.
 
-[v1.7.5] - 2026-04-26
-🎯 Milestone: Master Enterprise Roadmap Detailed & Merged.
-⚙️ Upgrade: CLI visual feedback & Git bypass documented.
+## [v1.6.0 - v1.7.4] GIT & AUTH REPAIR
+- Fixed "Authentication Failed" by injecting PAT into remote URL.
+- Created `auto_sync.sh` for automated progress tracking.
+
+## [v1.7.5] MASTER ENTERPRISE UPGRADE (CURRENT)
+- **Feature**: Added 🌀 visual processing to CLI for mobile UX.
+- **Feature**: Detailed 10-Phase Roadmap established.
+- **Feature**: Archive system created (`core/gemini_cli_backup.py`).
+- **Status**: Ready for Phase 5 (Cloud Memory).
