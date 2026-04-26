@@ -1,4 +1,4 @@
-import os, sys, time, subprocess, datetime
+import os, sys, time, subprocess
 from core.ai_brain import GeminiBrain
 from core.project_manager import ProjectManager
 from core.supabase_client import SupabaseClient
@@ -10,7 +10,7 @@ class AgentCLI:
         self.pm = ProjectManager()
         self.db = SupabaseClient()
     
-    def loading(self, msg, duration=2):
+    def loading(self, msg, duration=1):
         end = time.time() + duration
         i = 0
         while time.time() < end:
@@ -21,28 +21,39 @@ class AgentCLI:
         print(f"\r✅ {msg} Done!")
 
     def execute(self, task):
-        self.loading("Analyzing Architecture")
-        self.db.log_task("Ai-Coder", task, "In Progress")
+        # Handle /Add_Project name repo_url
+        if task.startswith("Add_Project"):
+            parts = task.split(" ")
+            if len(parts) < 3: return "Usage: Add_Project [name] [repo_url]"
+            self.loading(f"Cloning {parts[1]}")
+            return self.pm.add_project(parts[1], parts[2])
+
+        # Handle /Select name
+        if task.startswith("Select"):
+            parts = task.split(" ")
+            if len(parts) < 2: return "Usage: Select [name]"
+            return self.pm.select_project(parts[1])
+
+        # Default Pipeline Logic
+        if not self.pm.active_project:
+            return "⚠️ No project selected. Use /Select first."
+
+        self.loading(f"Processing Task for {self.pm.active_project}")
+        self.db.log_task(self.pm.active_project, task, "In Progress")
         
-        # AGENT PIPELINE: PLAN -> CODE -> TEST -> FIX
-        self.loading("Planner Agent: Creating Roadmap", duration=1)
-        self.loading("Coder Agent: Injecting Logic", duration=2)
-        self.loading("Tester Agent: Running Pytest", duration=1)
+        # Simulated Agent Pipeline (v1.3)
+        self.loading("Analyzing Repo Structure", duration=2)
+        version = f"v1.3.{int(time.time()) % 1000}"
         
-        # Git Commit Logic
-        version = f"v1.2.{int(time.time()) % 1000}"
-        self.loading(f"Git Push: {version}", duration=1)
-        
-        # DNA/Roadmap Sync
-        self.db.log_task("Ai-Coder", task, "Completed")
-        
-        print(f"\n🚀 SUCCESS: {task}")
-        print(f"📦 Version: {version}")
-        print(f"🔗 Supabase Sync: ACTIVE")
-        print("\nlocalhost:~/Ai-Coder# what is next?")
+        # DNA update logic for isolated project
+        dna_path = f"/root/Ai-Coder/projects/{self.pm.active_project}/DNA.md"
+        with open(dna_path, "a") as f:
+            f.write(f"\n[{version}] - Task: {task}\n")
+
+        self.db.log_task(self.pm.active_project, task, "Completed")
+        return f"🚀 Success: {task} | Project: {self.pm.active_project} | Version: {version}"
 
 if __name__ == "__main__":
-    import sys
     agent = AgentCLI()
     task = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Initialize"
-    agent.execute(task)
+    print(agent.execute(task))
