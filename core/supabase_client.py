@@ -1,25 +1,13 @@
-import os
+import httpx, os
 
-def get_config():
-    env = {}
-    path = '/root/Ai-Coder/.env'
-    if os.path.exists(path):
-        with open(path) as f:
-            for line in f:
-                line = line.strip()
-                if '=' in line and not line.startswith('#'):
-                    k, v = line.split('=', 1)
-                    env[k.strip()] = v.strip().strip('"').strip("'")
-    return env
+class SupabaseClient:
+    def __init__(self):
+        self.url = "https://ixdukafvxqermhgoczou.supabase.co"
+        self.key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4ZHVrYWZ2eHFlcm1oZ29jem91Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTc1MjM3MiwiZXhwIjoyMDkxMzI4MzcyfQ.R4syxxjfZNKRlMtCfOHpY-XMwZ1LF3RJnQNacBc-dHk"
+        self.headers = {"apikey": self.key, "Authorization": f"Bearer {self.key}", "Content-Type": "application/json"}
 
-conf = get_config()
-URL = conf.get("SUPABASE_URL", "").rstrip('/')
-# Priority to service role for bypassing RLS
-KEY = conf.get("SUPABASE_SERVICE_ROLE") or conf.get("SUPABASE_KEY")
-
-HEADERS = {
-    "apikey": KEY,
-    "Authorization": f"Bearer {KEY}",
-    "Content-Type": "application/json",
-    "Prefer": "return=minimal"
-}
+    def log_task(self, project_name, task, status):
+        data = {"project_name": project_name, "task": task, "status": status}
+        try:
+            return httpx.post(f"{self.url}/rest/v1/tasks", headers=self.headers, json=data)
+        except: return None
