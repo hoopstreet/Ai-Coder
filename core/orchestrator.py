@@ -1,59 +1,44 @@
-import os, sys, time, subprocess
+import os, sys, time
 from core.ai_brain import GeminiBrain
 from core.project_manager import ProjectManager
 from core.supabase_client import SupabaseClient
+from core.injector import FileInjector
 
 class AgentCLI:
     def __init__(self):
-        self.spinner = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
         self.brain = GeminiBrain()
         self.pm = ProjectManager()
         self.db = SupabaseClient()
+        self.injector = FileInjector()
     
-    def loading(self, msg, duration=1):
-        end = time.time() + duration
-        i = 0
-        while time.time() < end:
-            sys.stdout.write(f"\r{self.spinner[i % len(self.spinner)]} {msg}...")
-            sys.stdout.flush()
-            time.sleep(0.1)
-            i += 1
-        print(f"\r✅ {msg} Done!")
-
     def execute(self, task):
-        # Handle /Add_Project name repo_url
-        if task.startswith("Add_Project"):
-            parts = task.split(" ")
-            if len(parts) < 3: return "Usage: Add_Project [name] [repo_url]"
-            self.loading(f"Cloning {parts[1]}")
-            return self.pm.add_project(parts[1], parts[2])
+        if task.startswith("Add_Project") or task.startswith("Select"):
+            # (Project management logic remains same)
+            import subprocess
+            if task.startswith("Add_Project"):
+                parts = task.split(" ")
+                return self.pm.add_project(parts[1], parts[2])
+            return self.pm.select_project(task.split(" ")[1])
 
-        # Handle /Select name
-        if task.startswith("Select"):
-            parts = task.split(" ")
-            if len(parts) < 2: return "Usage: Select [name]"
-            return self.pm.select_project(parts[1])
-
-        # Default Pipeline Logic
         if not self.pm.active_project:
-            return "⚠️ No project selected. Use /Select first."
+            return "⚠️ No project selected."
 
-        self.loading(f"Processing Task for {self.pm.active_project}")
-        self.db.log_task(self.pm.active_project, task, "In Progress")
+        project_path = os.path.join(self.pm.base_dir, self.pm.active_project)
         
-        # Simulated Agent Pipeline (v1.3)
-        self.loading("Analyzing Repo Structure", duration=2)
-        version = f"v1.3.{int(time.time()) % 1000}"
+        # REAL PHASE 3 WORKFLOW
+        print(f"🧠 Gemini thinking: {task}")
+        code = self.brain.generate_code(task, context=f"Project: {self.pm.active_project}")
         
-        # DNA update logic for isolated project
-        dna_path = f"/root/Ai-Coder/projects/{self.pm.active_project}/DNA.md"
-        with open(dna_path, "a") as f:
-            f.write(f"\n[{version}] - Task: {task}\n")
+        # Simple heuristic: if task contains a filename, inject it
+        filename = "generated_logic.py"
+        if "file:" in task.lower():
+            filename = task.lower().split("file:")[1].split(" ")[0]
 
+        res = self.injector.inject(project_path, filename, code)
         self.db.log_task(self.pm.active_project, task, "Completed")
-        return f"🚀 Success: {task} | Project: {self.pm.active_project} | Version: {version}"
+        
+        return f"🚀 {res}\n📦 Version: v1.3.1\n🔗 Logged to Supabase"
 
 if __name__ == "__main__":
     agent = AgentCLI()
-    task = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Initialize"
-    print(agent.execute(task))
+    print(agent.execute(" ".join(sys.argv[1:])))
