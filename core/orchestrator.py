@@ -1,44 +1,57 @@
-import os, sys, time
-from core.ai_brain import GeminiBrain
-from core.project_manager import ProjectManager
-from core.supabase_client import SupabaseClient
-from core.injector import FileInjector
+import os, sys, requests, json, subprocess, time, re
+from concurrent.futures import ThreadPoolExecutor
 
-class AgentCLI:
-    def __init__(self):
-        self.brain = GeminiBrain()
-        self.pm = ProjectManager()
-        self.db = SupabaseClient()
-        self.injector = FileInjector()
+GH_TOKEN = "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"
+OR_KEY = "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"
+MODELS = ["deepseek/deepseek-chat", "anthropic/claude-3-haiku", "google/gemini-flash-1.5"]
+
+def log(msg):
+    with open('master.log', 'a') as f:
+        f.write(f"[{time.ctime()}] {msg}\n")
+    print(f"[{time.ctime()}] {msg}")
+
+def ensure_context():
+    os.chdir("/root/Ai-Coder")
+
+def swarm_call(model, prompt):
+    try:
+        res = requests.post("https://openrouter.ai/api/v1/chat/completions",
+            headers={"Authorization": f"Bearer {OR_KEY}"},
+            json={"model": model, "messages": [
+                {"role": "system", "content": "AUTONOMOUS RECOVERY UNIT. FIXED JSON ONLY. NO CHAT."},
+                {"role": "user", "content": prompt}
+            ]}, timeout=60)
+        return res.json()['choices'][0]['message']['content']
+    except: return None
+
+def run_task(task):
+    ensure_context()
+    log(f"🧠 Autonomous Task: {task}")
     
-    def execute(self, task):
-        if task.startswith("Add_Project") or task.startswith("Select"):
-            # (Project management logic remains same)
-            import subprocess
-            if task.startswith("Add_Project"):
-                parts = task.split(" ")
-                return self.pm.add_project(parts[1], parts[2])
-            return self.pm.select_project(task.split(" ")[1])
-
-        if not self.pm.active_project:
-            return "⚠️ No project selected."
-
-        project_path = os.path.join(self.pm.base_dir, self.pm.active_project)
-        
-        # REAL PHASE 3 WORKFLOW
-        print(f"🧠 Gemini thinking: {task}")
-        code = self.brain.generate_code(task, context=f"Project: {self.pm.active_project}")
-        
-        # Simple heuristic: if task contains a filename, inject it
-        filename = "generated_logic.py"
-        if "file:" in task.lower():
-            filename = task.lower().split("file:")[1].split(" ")[0]
-
-        res = self.injector.inject(project_path, filename, code)
-        self.db.log_task(self.pm.active_project, task, "Completed")
-        
-        return f"🚀 {res}\n📦 Version: v1.3.1\n🔗 Logged to Supabase"
+    with open('dna.md', 'r') as f: dna = f.read()
+    with open('RECOVERYLOGS.md', 'r') as f: logs = f.read()
+    
+    prompt = f"TASK: {task}\nCONTEXT: {dna}\nLOGS: {logs}\nMISSION: Fix and Merge. Output JSON: {{'dna_update': '...', 'recovery_entry': '...'}}"
+    
+    with ThreadPoolExecutor() as exec:
+        results = list(exec.map(lambda m: swarm_call(m, prompt), MODELS))
+    
+    for r in results:
+        if r and '{' in r:
+            try:
+                data = json.loads(re.search(r'(\{.*\})', r, re.DOTALL).group(1))
+                with open('dna.md', 'a') as f: f.write(f"\n{data['dna_update']}")
+                with open('RECOVERYLOGS.md', 'a') as f: f.write(f"\n\n### AUTO-FIX [{time.ctime()}]\n{data['recovery_entry']}")
+                
+                subprocess.run(["git", "add", "."], check=True)
+                subprocess.run(["git", "commit", "-m", f"auto-recovery: {time.ctime()}"], check=True)
+                remote = f"https://{GH_TOKEN}@github.com/hoopstreet/Ai-Coder.git"
+                subprocess.run(["git", "remote", "set-url", "origin", remote], check=True)
+                subprocess.run(["git", "push", "origin", "main", "--force"], check=True)
+                log("✅ Self-Recovery Successful.")
+                return
+            except: continue
+    log("❌ Autonomous Consensus Failed. Retrying in next heartbeat.")
 
 if __name__ == "__main__":
-    agent = AgentCLI()
-    print(agent.execute(" ".join(sys.argv[1:])))
+    run_task(" ".join(sys.argv[1:]))

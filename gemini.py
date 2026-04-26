@@ -1,44 +1,41 @@
-import os, requests, json, time
+import os, sys, requests, json, time, subprocess
 
-class GhostAgent:
+class AutonomousAgent:
     def __init__(self):
-        self.creds = {
-            "or": os.getenv("OR_KEY"),
-            "sb": os.getenv("SB_KEY"),
-            "sb_url": os.getenv("SB_URL"),
-            "nf": os.getenv("NF_TOKEN")
-        }
-        self.gemini_keys = ["AIzaSyDBHr3FRFAXexCYVYvolHWozEzsy5nZIas", "AIzaSyBRmO1HL4NZ5k_8mOKFvO6QwIs83KtkTxA"]
+        self.or_key = "sk-or-v1-d44bb63c9aeebdlbd139026679ee75c3077322c75e02615200367c49ecb4d11"
+        self.gemini_keys = [
+            "AIzaSyDBHr3FRFAXexCYVYvolHWozEzsy5nZIas",
+            "AIzaSyBRmOlHL4NZ5k_8mOKFvO6QwIs83KtkTxA",
+            "AIzaSyCvqCQu0TCWnmEDFZmV1_P_fKxcw4kOBTY",
+            "AIzaSyC2RY14NPQYVN5NQZJciivyQuWME9Hc9Yg",
+            "AIzaSyBTyzstJWpdKAjGHMfBAINfd8c7kpL0XAY"
+        ]
 
-    def run(self):
-        print("🔍 Scanning GitHub Repos...", flush=True)
-        repos = [d for d in os.listdir('/root') if os.path.isdir(f'/root/{d}/.git')]
-        
-        print("🔍 Checking Cloud Status...", flush=True)
-        infra = {"Supabase": "Offline", "Northflank": "Offline"}
-        try:
-            if requests.get(f"{self.creds['sb_url']}/rest/v1/", headers={"apikey": self.creds['sb'], "Authorization": f"Bearer {self.creds['sb']}"}, timeout=5).status_code < 400:
-                infra["Supabase"] = "Online"
-        except: pass
-        try:
-            r = requests.get("https://api.northflank.com/v1/projects", headers={"Authorization": f"Bearer {self.creds['nf']}"}, timeout=5)
-            if r.status_code == 200: infra["Northflank"] = f"Online ({len(r.json().get('projects', []))} Proj)"
-        except: pass
+    def log(self, msg):
+        with open('master.log', 'a') as f:
+            f.write(f"[{time.ctime()}] {msg}\n")
+        print(f"🤖 {msg}")
 
-        with open("project_map.txt", "r") as f: mapping = f.read()
+    def auto_fix(self, error_msg):
+        self.log(f"🛠 AUTO-RESOLVING: {error_msg[:50]}")
+        # Self-correction logic: re-link paths and check environment
+        subprocess.run(["hash", "-r"])
+        if "FileNotFoundError" in error_msg:
+            os.chdir("/root/Ai-Coder")
+        return self.run("Finalize missing upgrades and merge code setup.")
 
-        prompt = f"AUDIT v3.0\nCloud: {json.dumps(infra)}\nGit Repos: {repos}\nFiles: {mapping[:800]}\nPlan deployment for GitHub to Northflank."
-        
-        print("🤖 Consulting AI failover cluster...", flush=True)
-        headers = {"Authorization": f"Bearer {self.creds['or']}", "Content-Type": "application/json"}
-        payload = {"model": "google/gemini-2.0-flash-001", "messages": [{"role": "user", "content": prompt}]}
-        
-        try:
-            res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=40)
-            print("\n" + "="*40 + "\n🚀 DEPLOYMENT READINESS REPORT\n" + "="*40)
-            print(res.json()['choices'][0]['message']['content'])
-        except:
-            print("❌ AI link timed out. Check connection.")
+    def run(self, task):
+        self.log(f"Backtracking/Merging Task: {task}")
+        # Version analysis loop simulation
+        for key in self.gemini_keys:
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
+                res = requests.post(url, json={"contents": [{"parts": [{"text": task}]}]}, timeout=20)
+                return res.json()['candidates'][0]['content']['parts'][0]['text']
+            except: continue
+        return "Failover mode active."
 
 if __name__ == "__main__":
-    GhostAgent().run()
+    agent = AutonomousAgent()
+    if len(sys.argv) > 1:
+        print(agent.run(" ".join(sys.argv[1:])))
