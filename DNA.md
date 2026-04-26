@@ -1,5 +1,10 @@
 # 🧬 DNA.md — Project Evolution Log
-[v1.2.0] - 2026-04-26
-🎯 Task: Enterprise System Upgrade
-⚙️ Changes: Added Supabase, Gemini Brain, and Project Manager.
+
+[v1.2.321] - 2026-04-26
+🎯 Task: System Online (GitHub & Telegram Linked)
+⚙️ Changes:
+- Linked iSH to GitHub Remote (hoopstreet/Ai-Coder)
+- Activated Telegram Commander (bot/main.py)
+- Synchronized Official ROADMAP.md
 🧪 Testing: PASS
+📊 Status: PRODUCTION ONLINE
