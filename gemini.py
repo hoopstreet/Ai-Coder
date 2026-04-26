@@ -17,50 +17,49 @@ class AutonomousAgent:
 
     def call_ai(self, prompt, attempt=0):
         if attempt >= self.max_retries:
-            return "❌ Error: Free Tier Limit reached or Region Blocked."
+            return "❌ Error: All keys failed. This usually means a Region Block or invalid keys."
             
         apiKey = self.rotator.get_gemini_key()
         if not apiKey: return "❌ No API Key found."
         
-        # Free Tier works best with v1beta + 1.5-flash
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}"
+        # Absolute Stable Path (Fixed 404 issue)
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
         
+        params = {'key': apiKey}
         headers = {'Content-Type': 'application/json'}
+        
         payload = {
-            "contents": [{"parts": [{"text": prompt}]}],
-            "generationConfig": {
-                "temperature": 0.7,
-                "topP": 0.8,
-                "topK": 10
-            }
+            "contents": [{"parts": [{"text": prompt}]}]
         }
         
         try:
-            # Free tier needs clear headers and JSON structure
-            res = requests.post(url, headers=headers, json=payload, timeout=15)
-            data = res.json()
+            # Using v1 stable instead of v1beta to avoid 404 pathing errors
+            res = requests.post(url, params=params, headers=headers, json=payload, timeout=15)
             
             if res.status_code == 200:
-                if 'candidates' in data and data['candidates']:
+                data = res.json()
+                if 'candidates' in data:
                     return data['candidates'][0]['content']['parts'][0]['text']
             
-            # Handle specific Free Tier codes (429: Quota, 403: Forbidden/Region)
-            print(f"⚠️ Key #{self.rotator.gemini_index} failed (Code: {res.status_code}). Rotating...")
+            # Diagnostic Log
+            print(f"⚠️ Key #{self.rotator.gemini_index} Rejected (Status: {res.status_code})")
+            
+            # If 404 or 403, rotate immediately
             self.rotator.rotate_on_fail()
             return self.call_ai(prompt, attempt + 1)
             
         except Exception as e:
-            return f"❌ Connection Error: {e}"
+            return f"❌ Connection Failure: {e}"
 
     def run_autonomous_cycle(self, user_query=None):
         self.healer.check_all_systems()
         if user_query:
-            self.healer.show_spinner(f"Free-Tier Sync", 1)
+            self.healer.show_spinner(f"Bridge Sync", 1)
             response = self.call_ai(user_query)
             print(f"\n🤖 AGENT RESPONSE:\n{response}")
             self.db.log_event("SUCCESS", f"Query: {user_query[:30]}")
 
 if __name__ == "__main__":
     agent = AutonomousAgent()
-    query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Audit repo."
+    query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Status report."
     agent.run_autonomous_cycle(query)
