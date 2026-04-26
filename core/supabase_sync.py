@@ -1,30 +1,16 @@
-import httpx
-import sys
-from core.supabase_client import HEADERS, URL, get_config
+import os
+from supabase import create_client
 
-def sync_vault():
-    conf = get_config()
-    creds = [
-        {"project_name": "Ai-Coder", "key_name": "GITHUB_TOKEN", "encrypted_value": conf.get("GITHUB_TOKEN")},
-        {"project_name": "Ai-Coder", "key_name": "TELEGRAM_TOKEN", "encrypted_value": conf.get("TELEGRAM_BOT_TOKEN")},
-        {"project_name": "Ai-Coder", "key_name": "OPENROUTER_KEY", "encrypted_value": conf.get("OPENROUTER_KEY")}
-    ]
-    
-    print(f"🚀 Initiating Cloud Sync for {len(creds)} keys...")
-    
-    # Filter out None values
-    valid_creds = [c for c in creds if c["encrypted_value"]]
-    
+URL = "https://ixdukafvxqermhgoczou.supabase.co/"
+KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3M iOiJzdXBhYmFzZSIsInJlZiI6Iml4ZHVrYWZ2eHFlcm1oZ29jem91 Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NTc1MjM3M iwiZXhwIjoyMDkxMzI4MzcyfQ.R4syxxjfZNKRlMtCfOHpY-XMwZ1 LF3RJnQNacBc-dHk"
+
+def sync_state(msg):
     try:
-        with httpx.Client() as client:
-            # We use upsert logic (Prefer: resolution=merge)
-            response = client.post(URL, json=valid_creds, headers=HEADERS)
-            if response.status_code in [200, 201]:
-                print("✅ CLOUD SYNC SUCCESSFUL: Vault updated.")
-            else:
-                print(f"⚠️ CLOUD SYNC ISSUE: {response.status_code} - {response.text}")
+        client = create_client(URL, KEY)
+        client.table("logs").insert({"level": "INFO", "module": "SYNC", "message": msg}).execute()
+        client.table("projects").upsert({"name": "Ai-Coder", "status": "active", "roadmap_version": "v2.2.0"}).execute()
     except Exception as e:
-        print(f"❌ TRANSPORT ERROR: {e}")
+        print(f"Sync Error: {e}")
 
 if __name__ == "__main__":
-    sync_vault()
+    sync_state("Manual Sync Triggered")

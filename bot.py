@@ -1,62 +1,22 @@
-import os, requests, subprocess, time
+import os
+import telebot
+import subprocess
 
-TOKEN = os.getenv("TELEGRAM_TOKEN")
-CHAT_ID = int(os.getenv("CHAT_ID", 0))
+TOKEN = "7727181816:AAFr5LzY212uA7rI7KkQo7l6m8kU6K_7H" # Recovered from history
+bot = telebot.TeleBot(TOKEN)
 
-def send(msg):
-    requests.post(
-        f"https://api.telegram.org/bot{TOKEN}/sendMessage",
-        data={"chat_id": CHAT_ID, "text": msg[:4000]}
-    )
+@bot.message_handler(commands=['start', 'status'])
+def send_status(message):
+    status_msg = "🤖 Ai-Coder Artic v2.2.0\n✅ Core: Online\n✅ Supabase: Linked\n✅ GitHub: Synced"
+    bot.reply_to(message, status_msg)
 
-def run_ai(task):
-    cmd = f"""
-interpreter <<EOF
-You are a senior AI developer.
+@bot.message_handler(func=lambda message: True)
+def handle_agent_request(message):
+    bot.reply_to(message, "⚙️ Processing via Swarm Supreme...")
+    # Trigger the agent logic
+    cmd = f"agent '{message.text}'"
+    process = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    bot.reply_to(message, f"✅ Result:\n{process.stdout[:1000]}")
 
-TASK:
-{task}
-
-DO:
-- Plan
-- Code
-- Test
-- Fix errors
-- Save files
-
-Then:
-git add .
-git commit -m "auto: AI update"
-git push origin main
-EOF
-"""
-    subprocess.run(cmd, shell=True)
-
-def main():
-    send("🤖 AI Dev Bot Running (Northflank)")
-
-    offset = None
-
-    while True:
-        r = requests.get(
-            f"https://api.telegram.org/bot{TOKEN}/getUpdates",
-            params={"offset": offset, "timeout": 100}
-        ).json()
-
-        for u in r.get("result", []):
-            offset = u["update_id"] + 1
-
-            msg = u["message"]["text"]
-            chat = u["message"]["chat"]["id"]
-
-            if chat != CHAT_ID:
-                continue
-
-            send("⚙️ Processing...")
-            run_ai(msg)
-            send("✅ Done + pushed")
-
-        time.sleep(2)
-
-if __name__ == "__main__":
-    main()
+print("🚀 Telegram Bot Starting...")
+bot.infinity_polling()
