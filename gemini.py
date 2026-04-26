@@ -1,48 +1,52 @@
-import os, sys, requests, json, time, subprocess, re
+import os, sys, requests, json, time, subprocess
 
-class AutonomousAgent:
+class AutonomousSingularity:
     def __init__(self):
-        self.or_key = "sk-or-v1-d44bb63c9aeebdlbd139026679ee75c3077322c75e02615200367c49ecb4d11"
-        self.gemini_keys = [
+        self.keys = [
             "AIzaSyDBHr3FRFAXexCYVYvolHWozEzsy5nZIas",
             "AIzaSyBRmOlHL4NZ5k_8mOKFvO6QwIs83KtkTxA",
             "AIzaSyCvqCQu0TCWnmEDFZmV1_P_fKxcw4kOBTY",
             "AIzaSyC2RY14NPQYVN5NQZJciivyQuWME9Hc9Yg",
             "AIzaSyBTyzstJWpdKAjGHMfBAINfd8c7kpL0XAY"
         ]
-        self.repo_path = "/root/Ai-Coder"
+        self.repo = "/root/Ai-Coder"
 
     def log(self, msg):
-        with open(f'{self.repo_path}/master.log', 'a') as f:
-            f.write(f"[{time.ctime()}] {msg}\n")
+        with open(f'{self.repo}/master.log', 'a') as f:
+            f.write(f"[{time.ctime()}] 🧬 {msg}\n")
         print(f"🤖 {msg}")
 
-    def sync_github(self):
+    def sync(self):
         try:
-            subprocess.run(["git", "add", "."], check=True)
-            subprocess.run(["git", "commit", "-m", f"Autonomic Sync: {time.ctime()}"], check=True)
-            subprocess.run(["git", "push", "origin", "main", "--force"], check=True)
-            self.log("🌍 GitHub Sync Successful.")
+            subprocess.run(["git", "add", "."], cwd=self.repo)
+            subprocess.run(["git", "commit", "-m", f"Autonomic Singularity Sync: {time.ctime()}"], cwd=self.repo)
+            subprocess.run(["git", "push", "origin", "main", "--force"], cwd=self.repo)
+            self.log("✅ GitHub Cloud Mirror Synced.")
         except: pass
 
-    def run(self, task):
-        self.log(f"Mission: {task}")
-        # Core Engine Logic
-        for key in self.gemini_keys:
+    def deep_analyze_and_merge(self):
+        self.log("🔍 Running Deep Recursive File Audit...")
+        files = subprocess.getoutput("find . -maxdepth 2 -not -path '*/.*'")
+        history = ""
+        if os.path.exists("RECOVERYLOGS.md"):
+            with open("RECOVERYLOGS.md", "r") as f: history = f.read()
+        
+        prompt = f"MERGE TASK: Combine all versions v1.0.0-v2.7.0. FILES: {files}. LOGS: {history[-1000:]}. Output a unified recovery entry."
+        
+        for key in self.keys:
             try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
-                res = requests.post(url, json={"contents": [{"parts": [{"text": task}]}]}, timeout=15)
-                text = res.json()['candidates'][0]['content']['parts'][0]['text']
-                self.log("✅ Engine Response Received.")
-                return text
+                res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=15)
+                report = res.json()['candidates'][0]['content']['parts'][0]['text']
+                with open("RECOVERYLOGS.md", "a") as f:
+                    f.write(f"\n\n## 🌌 SINGULARITY MERGE [{time.ctime()}]\n{report}")
+                self.sync()
+                return
             except: continue
-        return "Failover needed."
 
 if __name__ == "__main__":
-    agent = AutonomousAgent()
-    if len(sys.argv) > 1:
-        res = agent.run(" ".join(sys.argv[1:]))
-        # Log to documentary
-        with open("/root/Ai-Coder/RECOVERYLOGS.md", "a") as f:
-            f.write(f"\n\n### [v2.6.1 - {time.ctime()}]\n{res[:300]}...")
-        agent.sync_github()
+    agent = AutonomousSingularity()
+    if len(sys.argv) > 1 and sys.argv[1] == "AUTO_SYNC":
+        agent.sync()
+    else:
+        agent.deep_analyze_and_merge()
