@@ -12,3 +12,7 @@
 ## [v1.0.3 - v1.0.4] SWARM ACTIVATION
 - Upgrade: Multi-model consensus enabled.
 - Upgrade: Threaded execution for parallel agents.
+
+
+### [v2.6.1 - Sun Apr 26 09:55:37 2026]
+Failover needed....
